@@ -61,7 +61,7 @@ namespace Project
 
         public void CreateAnalyzer()
         {
-            analyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(VERSION);
+            analyzer = new Lucene.Net.Analysis.SimpleAnalyzer();
         }
 
         public void CreateWriter()
