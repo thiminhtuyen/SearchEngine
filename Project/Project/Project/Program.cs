@@ -151,7 +151,46 @@ namespace Project
             writer.Dispose();
         }
 
+        public void CreateSearcher()
+        {
+            searcher = new IndexSearcher(indexDirectory);
+        }
 
+        public void CreateParser()
+        {
+            parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, TEXT_FN, analyzer);
+        }
+
+        public void CleanUpSearch()
+        {
+            searcher.Dispose();
+        }
+
+        public TopDocs SearchIndex(string querytext)
+        {
+            Console.WriteLine("Searching for " + querytext);
+            querytext = querytext.ToLower();
+            Query query = parser.Parse(querytext);
+            TopDocs results = searcher.Search(query, 100);
+            System.Console.WriteLine("Number of results is " + results.TotalHits);
+            return results;
+
+        }
+
+        public void DisplaySearchResult(TopDocs results)
+        {
+            int rank = 0;
+            foreach (ScoreDoc scoreDoc in results.ScoreDocs)
+            {
+                rank++;
+                // retrieve the document from the 'ScoreDoc' object
+                Lucene.Net.Documents.Document doc = searcher.Doc(scoreDoc.Doc);
+                string myFieldValue = doc.Get(TEXT_FN).ToString();
+                //Console.WriteLine("Rank " + rank + " score " + scoreDoc.Score + " text " + myFieldValue);
+                Console.WriteLine("Rank " + rank + " text " + myFieldValue);
+
+            }
+        }
 
         static void Main(string[] args)
         {
