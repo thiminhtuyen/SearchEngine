@@ -1,0 +1,21 @@
+.I 001
+.D
+what "similarity laws" must be obeyed when constructing aeroelastic models
+of heated high speed aircraft .
+.I 002
+.D
+what are the structural and aeroelastic problems associated with flight
+of high speed aircraft .
+.I 023
+.D
+how can the aerodynamic performance of channel flow ground effect
+machines be calculated .
+.I 157
+.D
+in summarizing theoretical and experimental work on the behaviour of a
+typical aircraft structure in a noise environment is it possible to
+develop a design procedure .
+.I 219
+.D
+has anyone developed an analysis which accurately establishes the large
+deflection behaviour of "conical shells" .
