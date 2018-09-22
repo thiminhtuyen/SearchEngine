@@ -144,7 +144,7 @@ namespace Project
             }
         }
 
-        public void CleanupIndex()
+        public void CleanUpIndex()
         {
             writer.Optimize();
             writer.Flush(true, true, true);
@@ -188,7 +188,6 @@ namespace Project
                 string myFieldValue = doc.Get(TEXT_FN).ToString();
                 //Console.WriteLine("Rank " + rank + " score " + scoreDoc.Score + " text " + myFieldValue);
                 Console.WriteLine("Rank " + rank + " text " + myFieldValue);
-
             }
         }
 
@@ -207,9 +206,14 @@ namespace Project
             DateTime start = System.DateTime.Now;
             mySearchEngine.IndexText(sourceFolder);
             DateTime indexEnd = System.DateTime.Now;
-            mySearchEngine.CleanupIndex();
+            // Measuring Indexing execution time
+            mySearchEngine.CleanUpIndex();
             Console.WriteLine("Time to index : " + (indexEnd - start));
             Console.ReadKey();
+            // Create parser and searcher
+            mySearchEngine.CreateSearcher();
+            mySearchEngine.CreateParser();
+
         }
     }
 }
