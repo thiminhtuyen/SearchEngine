@@ -191,6 +191,57 @@ namespace Project
                 Console.WriteLine("Rank " + rank + " text " + myFieldValue);
             }
         }
+        // Declare global variables
+        string[] queryID = new string[5];
+        string[] queryText = new string[5];
+
+        public void GetQuery(string queryPath)
+        {
+            string infilename = queryPath;
+            System.IO.StreamReader reader = new System.IO.StreamReader(infilename);
+            string line = "";
+            string flagID = ".I";
+            string flagDescription = ".D";
+            int countLine = 1;
+            int countID = -1;
+            while (line != null)
+            {
+                //Console.WriteLine("count" + countLine);
+                //Console.WriteLine("line" + line);
+                if (line == "")
+                {
+                    //skip
+                }
+                else if (line.Contains(flagID))
+                {
+                    countID += 1;
+                    //Console.WriteLine("\ncountID " + countID);
+                    queryID[countID] = line.Substring(line.IndexOf(flagID) + 3); // Skip the string ".I"
+                    //Console.WriteLine("ID " + queryID[countID]);
+                    //Console.ReadKey();
+                }
+                else if (line.Contains(flagDescription))
+                {
+                    // skip the string ".D"
+                }
+                else
+                {
+                    queryText[countID] += line;
+                    //Console.WriteLine("Text " + queryText[countID]);
+                    //Console.ReadKey();
+                }
+                countLine += 1;
+                line = reader.ReadLine();
+            }
+            int i;
+            for (i = 0; i < 5; i++)
+            {
+                Console.WriteLine();
+                Console.WriteLine("ID: " + queryID[i]);
+                Console.WriteLine("Query:\n" + queryText[i]);
+            }
+            Console.ReadKey();
+        }
 
         static void Main(string[] args)
         {
@@ -225,9 +276,10 @@ namespace Project
                 Environment.Exit(0);
             }
 
-
-
-           
+            // Take queries
+            Console.WriteLine("Please enter the directory to the query file");
+            String queryPath = mySearchEngine.TakePath();
+            mySearchEngine.GetQuery(queryPath);
 
         }
     }
