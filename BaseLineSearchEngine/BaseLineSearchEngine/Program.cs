@@ -139,17 +139,37 @@ namespace Project
             }
         }
 
-        // Declare global variables
-        string[] queryID = new string[5];
-        string[] queryText = new string[5];
+        public void SearchTextWithExplanation(string queryID, string querytext)
+        {
+            System.Console.WriteLine("Searching for query No." + queryID);
+            querytext = querytext.ToLower();
+            Query query = parser.Parse(querytext);
 
-        public void GetQuery(string queryPath)
+            TopDocs results = searcher.Search(query, 100);
+            System.Console.WriteLine("Number of results is " + results.TotalHits);
+            int rank = 0;
+            foreach (ScoreDoc scoreDoc in results.ScoreDocs)
+            {
+                rank++;
+                Lucene.Net.Documents.Document doc = searcher.Doc(scoreDoc.Doc);
+                string myFieldValue = doc.Get(TEXT_FN).ToString();
+                Console.WriteLine("Rank " + rank + " text " + myFieldValue);
+                double score = scoreDoc.Score;
+                Explanation ex = searcher.Explain(query, scoreDoc.Doc);
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        public Dictionary<string, string> GetQuery(string queryPath)
         {
             string infilename = queryPath;
             System.IO.StreamReader reader = new System.IO.StreamReader(infilename);
             string line = "";
             string flagID = ".I";
             string flagDescription = ".D";
+            string[] queryID = new string[5];
+            string[] queryText = new string[5];
+            Dictionary<string, string> myQuery = new Dictionary<string, string>();
             int countLine = 1;
             int countID = -1;
             while (line != null)
@@ -181,15 +201,17 @@ namespace Project
                 countLine += 1;
                 line = reader.ReadLine();
             }
+            // Add IDs and Description to myQuery dictionary to return when the method is finished.
+            /* A dictionary data structure is used to store IDs and Descriptions because C# does not
+             allowed a method to return 2 arrays */
             int i;
             for (i = 0; i < 5; i++)
             {
-                Console.WriteLine();
-                Console.WriteLine("ID: " + queryID[i]);
-                Console.WriteLine("Query:\n" + queryText[i]);
+                myQuery.Add(queryID[i], queryText[i]);
             }
-            Console.ReadKey();
+            return myQuery;
         }
+
 
         static void Main(string[] args)
         {
@@ -198,15 +220,15 @@ namespace Project
             String sourceFolder = mySearchEngine.TakePath();
             Console.WriteLine("please enter the directory to the Index Folder");
             String indexPath = mySearchEngine.TakePath();
+            // Build Index
+            mySearchEngine.OpenIndexPath(indexPath);
+            mySearchEngine.CreateAnalyzer();
+            mySearchEngine.CreateWriter();
 
             //User Confirmation
             DialogResult ans = MessageBox.Show("Do you like to create the index from the specified collection ? ", "Please confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (ans == DialogResult.Yes)
             {
-                // Build Index
-                mySearchEngine.OpenIndexPath(indexPath);
-                mySearchEngine.CreateAnalyzer();
-                mySearchEngine.CreateWriter();
                 // Index Text
                 DateTime start = System.DateTime.Now;
                 mySearchEngine.IndexText(sourceFolder);
@@ -214,22 +236,39 @@ namespace Project
                 // Measuring Indexing execution time
                 mySearchEngine.CleanUpIndex();
                 Console.WriteLine("Time to index : " + (indexEnd - start));
+                Console.WriteLine("Press any key to continue:");
                 Console.ReadKey();
                 // Create parser and searcher
                 mySearchEngine.CreateSearcher();
                 mySearchEngine.CreateParser();
             }
-
             else
             {
                 Environment.Exit(0);
             }
 
-
-            //Take queries
+            // Take queries
             Console.WriteLine("Please enter the directory to the query file");
             String queryPath = mySearchEngine.TakePath();
-            mySearchEngine.GetQuery(queryPath);
+            Dictionary<string, string> myQuery = new Dictionary<string, string>();
+            myQuery = mySearchEngine.GetQuery(queryPath);
+
+            // Check if the dictionary holds the correct values
+            foreach (KeyValuePair<string, string> entry in myQuery)
+            {
+                Console.WriteLine("Query ID: " + entry.Key);
+                Console.WriteLine("Query Description: " + entry.Value);
+            }
+            Console.WriteLine("Press any key to continue:");
+            Console.ReadKey();
+
+            //Search Query
+            foreach (KeyValuePair<string, string> entry in myQuery)
+            {
+                mySearchEngine.SearchTextWithExplanation(entry.Key, entry.Value);
+            }
+            Console.WriteLine("Press any key to continue:");
+            Console.ReadKey();
 
         }
     }
