@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -197,21 +198,33 @@ namespace Project
             String sourceFolder = mySearchEngine.TakePath();
             Console.WriteLine("please enter the directory to the Index Folder");
             String indexPath = mySearchEngine.TakePath();
-            // Build Index
-            mySearchEngine.OpenIndexPath(indexPath);
-            mySearchEngine.CreateAnalyzer();
-            mySearchEngine.CreateWriter();
-            // Index Text
-            DateTime start = System.DateTime.Now;
-            mySearchEngine.IndexText(sourceFolder);
-            DateTime indexEnd = System.DateTime.Now;
-            // Measuring Indexing execution time
-            mySearchEngine.CleanUpIndex();
-            Console.WriteLine("Time to index : " + (indexEnd - start));
-            Console.ReadKey();
-            // Create parser and searcher
-            mySearchEngine.CreateSearcher();
-            mySearchEngine.CreateParser();
+
+            //User Confirmation
+            DialogResult ans = MessageBox.Show("Do you like to create the index from the specified collection ? ", "Please confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (ans == DialogResult.Yes)
+            {
+                // Build Index
+                mySearchEngine.OpenIndexPath(indexPath);
+                mySearchEngine.CreateAnalyzer();
+                mySearchEngine.CreateWriter();
+                // Index Text
+                DateTime start = System.DateTime.Now;
+                mySearchEngine.IndexText(sourceFolder);
+                DateTime indexEnd = System.DateTime.Now;
+                // Measuring Indexing execution time
+                mySearchEngine.CleanUpIndex();
+                Console.WriteLine("Time to index : " + (indexEnd - start));
+                Console.ReadKey();
+                // Create parser and searcher
+                mySearchEngine.CreateSearcher();
+                mySearchEngine.CreateParser();
+            }
+
+            else
+            {
+                Environment.Exit(0);
+            }
+
 
             //Take queries
             Console.WriteLine("Please enter the directory to the query file");
