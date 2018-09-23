@@ -9,6 +9,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.QueryParsers;
+using System.Windows.Forms;
 
 namespace Project
 {
@@ -202,17 +203,31 @@ namespace Project
             mySearchEngine.OpenIndexPath(indexPath);
             mySearchEngine.CreateAnalyzer();
             mySearchEngine.CreateWriter();
-            // Index Text
-            DateTime start = System.DateTime.Now;
-            mySearchEngine.IndexText(sourceFolder);
-            DateTime indexEnd = System.DateTime.Now;
-            // Measuring Indexing execution time
-            mySearchEngine.CleanUpIndex();
-            Console.WriteLine("Time to index : " + (indexEnd - start));
-            Console.ReadKey();
-            // Create parser and searcher
-            mySearchEngine.CreateSearcher();
-            mySearchEngine.CreateParser();
+
+            //User Confirmation
+            DialogResult ans = MessageBox.Show("Do you like to create the index from the specified collection ? ", "Please confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (ans == DialogResult.Yes)
+            {
+                // Index Text
+                DateTime start = System.DateTime.Now;
+                mySearchEngine.IndexText(sourceFolder);
+                DateTime indexEnd = System.DateTime.Now;
+                // Measuring Indexing execution time
+                mySearchEngine.CleanUpIndex();
+                Console.WriteLine("Time to index : " + (indexEnd - start));
+                Console.ReadKey();
+                // Create parser and searcher
+                mySearchEngine.CreateSearcher();
+                mySearchEngine.CreateParser();
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
+
+
+
+           
 
         }
     }
