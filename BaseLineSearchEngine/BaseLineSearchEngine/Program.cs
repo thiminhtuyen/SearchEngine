@@ -87,7 +87,7 @@ namespace Project
                     line += reader.ReadLine();
                 }
                 var doc = new Document();
-                doc.Add(new Field("Text", line, Field.Store.YES, Field.Index.ANALYZED);
+                doc.Add(new Field(TEXT_FN, line, Field.Store.YES, Field.Index.ANALYZED));
                 writer.AddDocument(doc);
             }
         }
