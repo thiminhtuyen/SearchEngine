@@ -23,6 +23,8 @@ namespace Project
 
         const Lucene.Net.Util.Version VERSION = Lucene.Net.Util.Version.LUCENE_30;
         const string TEXT_FN = "text";
+        public string[] stopWords = { "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };
+
 
         public Project()
         {
@@ -90,6 +92,7 @@ namespace Project
                 doc.Add(new Field(TEXT_FN, line, Field.Store.YES, Field.Index.ANALYZED));
                 writer.AddDocument(doc);
             }
+            count += 1;
         }
 
         public void CleanUpIndex()
@@ -212,6 +215,43 @@ namespace Project
             return myQuery;
         }
 
+        public string GetInfoDescription(Dictionary<string, string> myQuery, string infoId)
+        {
+            string description = "";
+            foreach (KeyValuePair<string, string> entry in myQuery)
+            {
+                if (entry.Key == infoId)
+                {
+                    description = entry.Value;
+                    break;
+                }
+            }
+            return description;
+        }
+
+        //Tokenising the information needs(Purpose:to remove stop words)
+        public string[] TokeniseDescription(string description)
+        {
+            // stub
+            char[] delims = new char[] { ' ', '\t', '\'', '"', '-', '(', ')', ',', '’', '\n', ':', ';', '?', '.', '!' };
+            return description.ToLower().Split(delims, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        //Remove Stop words
+        public string[] StopWordFilter(string[] descriptionTokens)
+        {
+
+            int numTokens = descriptionTokens.Count();
+            List<string> filteredTokens = new List<string>();
+            for (int i = 0; i < numTokens; i++)
+            {
+                string token = descriptionTokens[i];
+                if (!stopWords.Contains(token) && (token.Length > 2))
+                    filteredTokens.Add(token);
+            }
+            return filteredTokens.ToArray<string>();
+        }
+
 
         static void Main(string[] args)
         {
@@ -267,6 +307,23 @@ namespace Project
             {
                 mySearchEngine.SearchTextWithExplanation(entry.Key, entry.Value);
             }
+
+            //Create Query
+            Console.WriteLine("Please enter the infomation Id:");
+            string infoNeedId = Console.ReadLine();
+            string description = mySearchEngine.GetInfoDescription(myQuery, infoNeedId);
+            Console.WriteLine(description);
+
+            //Remove Stop words
+            string[] Tokens = mySearchEngine.TokeniseDescription(description);
+            string[] DescriptionTokens = mySearchEngine.StopWordFilter(Tokens);
+
+
+            //test
+            //string des = string.Join(" ", DescriptionTokens);
+            //mySearchEngine.SearchTextWithExplanation(infoNeedId, description);
+            TopDocs results = mySearchEngine.SearchIndex(description);
+            mySearchEngine.DisplaySearchResult(results);
             Console.WriteLine("Press any key to continue:");
             Console.ReadKey();
 
