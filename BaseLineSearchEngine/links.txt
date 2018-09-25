@@ -1,0 +1,12 @@
+E:\Semester 4\IFN 647- Information Retrieval\Project\SearchEngine\SearchEngine\CustomizedSearchEngine\Project\crandocs
+
+E:\Semester 4\IFN 647- Information Retrieval\Project\SearchEngine\SearchEngine\CustomizedSearchEngine\index
+
+
+E:\Semester 4\IFN 647- Information Retrieval\Project\SearchEngine\SearchEngine\CustomizedSearchEngine\Project\collection\cran_information_needs.txt
+
+using System.Windows.Forms;
+
+TopcDocs results = .SearchIndex
+
+DisplaySearchResult
