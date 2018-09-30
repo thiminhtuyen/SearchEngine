@@ -253,6 +253,51 @@ namespace Project
             return filteredTokens.ToArray<string>();
         }
 
+        public void WriteToResultFile(string resultPath, string queryID, TopDocs results)
+        {
+            string delimiter = " ";
+            string filename = "result_trec_eval.txt";
+            string filepath = resultPath + filename;
+            Console.WriteLine("File Path" + filepath);
+            int rank = 0;
+            string flagID = ".ID";
+            Console.WriteLine(System.IO.File.Exists(filepath) == false);
+            if (System.IO.File.Exists(filepath) == false)
+            {
+                using (System.IO.StreamWriter writer = new System.IO.StreamWriter(filepath, false))
+                {
+                    foreach (ScoreDoc scoreDoc in results.ScoreDocs)
+                    {
+                        Console.WriteLine("HERERE");
+                        rank++;
+                        Lucene.Net.Documents.Document doc = searcher.Doc(scoreDoc.Doc);
+                        string myFieldValue = doc.Get(TEXT_FN).ToString();
+                        string docID = myFieldValue.Substring(myFieldValue.IndexOf(flagID) + 4, myFieldValue.IndexOf('.', myFieldValue.IndexOf('.') + 1) - (myFieldValue.IndexOf(' ', 0)));
+                        Console.WriteLine("docID" + docID);
+                        writer.WriteLine(docID + delimiter + " " + "Q0" + delimiter + queryID + delimiter + rank + delimiter + scoreDoc.Score + delimiter + "BaseLineSystem");
+                    }
+                    writer.Flush();
+                    writer.Close();
+                }
+            }
+            else
+            {
+                Console.WriteLine("EXISSSTTTTTTTTTTTTTTTTTTTT");
+                using (System.IO.StreamWriter writer = new System.IO.StreamWriter(filepath, true))
+                {
+                    foreach (ScoreDoc scoreDoc in results.ScoreDocs)
+                    {
+                        rank++;
+                        Lucene.Net.Documents.Document doc = searcher.Doc(scoreDoc.Doc);
+                        string myFieldValue = doc.Get(TEXT_FN).ToString();
+                        string docID = myFieldValue.Substring(myFieldValue.IndexOf(flagID) + 4, myFieldValue.IndexOf('.', myFieldValue.IndexOf('.') + 1) - (myFieldValue.IndexOf(' ', 0)));
+                        writer.WriteLine(docID + delimiter + "Q0" + delimiter + queryID + delimiter + rank + delimiter + scoreDoc.Score + delimiter + "BaseLineSystem");
+                    }
+                    writer.Flush();
+                    writer.Close();
+                }
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -328,6 +373,11 @@ namespace Project
             Console.WriteLine("Press any key to continue:");
             Console.ReadKey();
 
+            // Write results to trec_eval format file
+            Console.WriteLine("Where do you want to save the results? Please enter the directory");
+            string resultPath = mySearchEngine.TakePath();
+            mySearchEngine.WriteToResultFile(resultPath, infoNeedId, results);
+            Console.ReadKey();
         }
     }
 }
