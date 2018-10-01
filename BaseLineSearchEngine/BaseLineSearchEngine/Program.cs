@@ -10,6 +10,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.QueryParsers;
+using BaseLineSearchEngine;
 
 namespace Project
 {
@@ -302,10 +303,12 @@ namespace Project
         static void Main(string[] args)
         {
             Project mySearchEngine = new Project();
-            Console.WriteLine("Please enter the directory to the source documents");
-            String sourceFolder = mySearchEngine.TakePath();
-            Console.WriteLine("please enter the directory to the Index Folder");
-            String indexPath = mySearchEngine.TakePath();
+            //Console.WriteLine("Please enter the directory to the source documents");
+            //String sourceFolder = mySearchEngine.TakePath();
+            String sourceFolder = Prompt.ShowDialog("Please enter the directory to the source document", "Source Documents");
+            //Console.WriteLine("please enter the directory to the Index Folder");
+            //String indexPath = mySearchEngine.TakePath();
+            String indexPath = Prompt.ShowDialog("please enter the directory to the Index Folder", "Index Path");
             // Build Index
             mySearchEngine.OpenIndexPath(indexPath);
             mySearchEngine.CreateAnalyzer();
@@ -334,8 +337,9 @@ namespace Project
             }
 
             // Take queries
-            Console.WriteLine("Please enter the directory to the query file");
-            String queryPath = mySearchEngine.TakePath();
+            //Console.WriteLine("Please enter the directory to the query file");
+            //String queryPath = mySearchEngine.TakePath();
+            String queryPath = Prompt.ShowDialog("Please enter the directory to the query file", "Query Path");
             Dictionary<string, string> myQuery = new Dictionary<string, string>();
             myQuery = mySearchEngine.GetQuery(queryPath);
 
@@ -374,8 +378,9 @@ namespace Project
             Console.ReadKey();
 
             // Write results to trec_eval format file
-            Console.WriteLine("Where do you want to save the results? Please enter the directory");
-            string resultPath = mySearchEngine.TakePath();
+            //Console.WriteLine("Where do you want to save the results? Please enter the directory");
+            //string resultPath = mySearchEngine.TakePath();
+            String resultPath = Prompt.ShowDialog("Where do you want to save the results? Please enter the directory", "Result Path");
             mySearchEngine.WriteToResultFile(resultPath, infoNeedId, results);
             Console.ReadKey();
         }
