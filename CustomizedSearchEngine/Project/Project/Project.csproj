@@ -38,6 +38,15 @@
     <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
       <HintPath>H:\IR\Week 3\Apache-Lucene.Net-3.0.3-RC2.bin\NET40\bin\Lucene.Net.dll</HintPath>
     </Reference>
+    <Reference Include="Lucene.Net.Contrib.Highlighter">
+      <HintPath>H:\IR\Week 3\Apache-Lucene.Net-3.0.3-RC2.bin\NET40\bin\Contrib\Lucene.Net.Contrib.Highlighter.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Snowball">
+      <HintPath>H:\IR\Week 3\Apache-Lucene.Net-3.0.3-RC2.bin\NET40\bin\Contrib\Lucene.Net.Contrib.Snowball.dll</HintPath>
+    </Reference>
+    <Reference Include="Syn.WordNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syn.WordNet.1.0.5\lib\net46\Syn.WordNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -49,7 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NewSimilarity.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Prompt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
