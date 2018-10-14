@@ -712,7 +712,6 @@ namespace Project
             string filepath = resultPath + filename;
             Console.WriteLine("File Path" + filepath);
             int rank = 0;
-            string flagID = ".ID";
             Console.WriteLine(System.IO.File.Exists(filepath) == false);
             if (System.IO.File.Exists(filepath) == false)
             {
@@ -812,7 +811,7 @@ namespace Project
             //Build Index
             mySearchEngine.OpenIndexPath(indexPath2);
             mySearchEngine.CreateStandardAnalyzer();
-            mySearchEngine.CreateWriter(false);
+            mySearchEngine.CreateWriter();
 
             // Index Text
             DateTime startIndex2 = System.DateTime.Now;
@@ -821,7 +820,7 @@ namespace Project
             mySearchEngine.CleanUpIndex();
             TimeSpan indexTime2 = indexEnd2 - startIndex2;
 
-            mySearchEngine.CreateSearcher(false);
+            mySearchEngine.CreateSearcher();
             mySearchEngine.CreateParser(TEXT_FN);
 
             foreach (KeyValuePair<string, string> entry in myQuery)
